@@ -15,12 +15,6 @@ namespace Downloader
             _stream = stream;
         }
 
-        public override long Position
-        {
-            get { return _stream.Position; }
-            set { _stream.Position = value; }
-        }
-
         public override bool CanRead => false;
 
         public override bool CanSeek => false;
@@ -29,10 +23,10 @@ namespace Downloader
 
         public override long Length => _stream.Length;
 
-        public override void Write(byte[] buffer, int offset, int count)
+        public override long Position
         {
-            _position += count;
-            _stream.Write(buffer, offset, count);
+            get { return _stream.Position; }
+            set { _stream.Position = value; }
         }
 
         public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
@@ -42,18 +36,6 @@ namespace Downloader
         }
 
         public override void EndWrite(IAsyncResult asyncResult) => _stream.EndWrite(asyncResult);
-
-        public override void WriteByte(byte value)
-        {
-            _position += 1;
-            _stream.WriteByte(value);
-        }
-
-        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        {
-            _position += count;
-            return _stream.WriteAsync(buffer, offset, count, cancellationToken);
-        }
 
         public override void Flush()
         {
@@ -73,6 +55,24 @@ namespace Downloader
         public override void SetLength(long value)
         {
             throw new NotImplementedException();
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            _position += count;
+            _stream.Write(buffer, offset, count);
+        }
+
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            _position += count;
+            return _stream.WriteAsync(buffer, offset, count, cancellationToken);
+        }
+
+        public override void WriteByte(byte value)
+        {
+            _position += 1;
+            _stream.WriteByte(value);
         }
     }
 }

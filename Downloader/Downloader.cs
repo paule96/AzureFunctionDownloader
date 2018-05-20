@@ -1,23 +1,23 @@
-
-using System.IO;
+using Downloader.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using System;
-using System.Threading.Tasks;
-using System.Net.Http.Headers;
-using System.IO.Compression;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using Downloader.Model;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace Downloader
 {
     public static class Downloader
     {
         private static HttpClient Client { get; } = new HttpClient();
+
         [FunctionName("Downloader")]
         public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
@@ -41,26 +41,15 @@ namespace Downloader
             }
             return CreateResult(filenamesAndUrls);
         }
+
         private static IActionResult CreateResult(List<FileAndUrl> source)
         {
             // see sample here: https://stackoverflow.com/questions/18852389/generate-a-zip-file-from-azure-blob-storage-files
-            // .net core way is maybe this: https://blog.stephencleary.com/2016/11/streaming-zip-on-aspnet-core.html         
+            // .net core way is maybe this: https://blog.stephencleary.com/2016/11/streaming-zip-on-aspnet-core.html
             return new FileCallbackResult(new MediaTypeHeaderValue("application/octet-stream"), (outputStream, _) => ZipData(outputStream, source))
             {
                 FileDownloadName = "test.zip"
             };
-        }      
-
-        private static async Task ZipData(Stream outputStream, IEnumerable<FileAndUrl> sourceList)
-        {
-            using (var zipArchive = new ZipArchive(new WriteOnlyStreamWrapper(outputStream), ZipArchiveMode.Create))
-            {                
-                foreach (var kvp in sourceList)
-                {
-                    await PutDataInStream(kvp.Url, kvp.FileName, zipArchive);                    
-                }
-            }
-            Console.WriteLine("Done with all.");
         }
 
         private static async Task PutDataInStream(string sourceUrl, string fileName, ZipArchive zipArchive)
@@ -69,9 +58,20 @@ namespace Downloader
             using (var zipStream = zipEntry.Open())
             using (var stream = await Client.GetStreamAsync(sourceUrl))
             {
-                
                 await stream.CopyToAsync(zipStream);
             }
+        }
+
+        private static async Task ZipData(Stream outputStream, IEnumerable<FileAndUrl> sourceList)
+        {
+            using (var zipArchive = new ZipArchive(new WriteOnlyStreamWrapper(outputStream), ZipArchiveMode.Create))
+            {
+                foreach (var kvp in sourceList)
+                {
+                    await PutDataInStream(kvp.Url, kvp.FileName, zipArchive);
+                }
+            }
+            Console.WriteLine("Done with all.");
         }
     }
 }
