@@ -26,6 +26,11 @@ steps:
     msbuildArgs: '/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl="$(Agent.TempDirectory)\WebAppContent\\"'
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
+- task: ArchiveFiles@2
+  displayName: 'Archive Files'
+  inputs:
+    rootFolderOrFile: '$(Agent.TempDirectory)\WebAppContent'
+    includeRootFolder: false
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
   inputs:
