@@ -11,6 +11,14 @@ variables:
   RestoreBuildProjects: 'Downloader/*.csproj'
   
 steps:
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.4.1'
+  inputs:
+    versionSpec: 4.4.1
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    restoreSolution: '$(BuildSolution)'
 - task: VSBuild@1
   displayName: 'Build solution'
   inputs:
