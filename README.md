@@ -1,17 +1,17 @@
 # AzureFunctionDownloader
-A Azure Function you can send http url's of files that put it in a zip Archiv.
+An Azure Function which takes urls of files and generate a downloadable zip archive out of them.
 
-# Use the Function
+# Getting started
 
-If you deploy the function you can use this like this with get requests:
+After you have deployed the function you can use it like the following HTTP GET request:
 
 ```
 https://yourfunctionurl/api/Downloader?filenameInZip.exe=https://urltofile/file.exe
 ```
 
-This also supports post. Your Body must set to application/json and looks like this:
+The function also supports POST. When using POST your HTTP Body needs to be set to application/json and should contain the values like this:
 
-```
+```json
 [
 	{
 		Key: 'filenameInZip.exe',
@@ -24,3 +24,7 @@ The URL for Post are:
 ```
 https://yourfunctionurl/api/Downloader
 ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
