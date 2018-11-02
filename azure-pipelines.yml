@@ -1,0 +1,17 @@
+# ASP.NET Core build
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+variables:
+  BuildConfiguration: 'Release'
+  RestoreBuildProjects: '/Downloader/*.csproj'
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(RestoreBuildProjects)'
+    arguments: '--configuration $(BuildConfiguration)'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+PathtoPublish: '$(build.artifactstagingdirectory)'
