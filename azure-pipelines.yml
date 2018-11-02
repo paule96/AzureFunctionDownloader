@@ -4,7 +4,7 @@ pool:
   vmImage: 'Ubuntu 16.04'
 variables:
   BuildConfiguration: 'Release'
-  RestoreBuildProjects: '/Downloader/*.csproj'
+  RestoreBuildProjects: 'Downloader/*.csproj'
 steps:
 - task: DotNetCoreCLI@2
   displayName: Build
