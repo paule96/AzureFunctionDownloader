@@ -14,8 +14,8 @@ The function also supports POST. When using POST your HTTP Body needs to be set 
 ```json
 [
 	{
-		Key: 'filenameInZip.exe',
-		Value: 'https://urltofile/file.exe'
+		"Key": 'filenameInZip.exe',
+		"Value": 'https://urltofile/file.exe'
 	}
 ]
 ```
